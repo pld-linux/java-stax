@@ -3,6 +3,11 @@
 %bcond_without	javadoc		# don't build javadoc
 %bcond_without	tests		# don't build and run tests
 #
+%if "%{pld_release}" == "ti"
+%bcond_without	java_sun	# build with gcj
+%else
+%bcond_with	java_sun	# build with java-sun
+%endif
 %include	/usr/lib/rpm/macros.java
 #
 %define		apiversion	1.0.1
@@ -18,11 +23,13 @@ Source0:	http://dist.codehaus.org/stax/distributions/%{srcname}-src-%{version}.z
 Patch0:		%{name}-sourcetarget.patch
 URL:		http://stax.codehaus.org/
 BuildRequires:	ant >= 1.7.1-4
-BuildRequires:	java-gcj-compat-devel
+%{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
+%{?with_java_sun:BuildRequires:	java-sun}
 BuildRequires:	jpackage-utils
+BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
-Provides:	stax-api = %{api_version}
+Provides:	java(Stax) = %{apiversion}
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -63,10 +70,11 @@ Pliki demonstracyjne i przykłady dla pakietu %{srcname}.
 %patch0 -p1
 
 %build
-export SHELL=/bin/sh
+
+export LC_ALL=en_US
 
 %ant clean
-%ant -Dbuild.compiler=gcj dist
+%ant dist
 %ant javadoc
 
 %install
