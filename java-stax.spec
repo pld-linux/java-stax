@@ -15,7 +15,7 @@
 Summary:	StAX reference implementation
 Name:		java-stax
 Version:	1.2.0
-Release:	0.1
+Release:	1
 License:	Apache v2.0
 Group:		Libraries/Java
 Source0:	http://dist.codehaus.org/stax/distributions/%{srcname}-src-%{version}.zip
