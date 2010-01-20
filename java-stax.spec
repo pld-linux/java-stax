@@ -74,8 +74,14 @@ Pliki demonstracyjne i przykłady dla pakietu %{srcname}.
 export LC_ALL=en_US
 
 %ant clean
+%if %{without java_sun}
+%ant -Dbuild.compiler=gcj dist
+%else
 %ant dist
+%endif
+%if %{with javadoc}
 %ant javadoc
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -86,9 +92,11 @@ ln -s %{srcname}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}.jar
 cp -a build/%{srcname}-api-%{apiversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}-api-%{apiversion}.jar
 ln -s %{srcname}-api-%{apiversion}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}-api.jar
 
+%if %{with javadoc}
 install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -a build/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+%endif
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a src/samples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -107,7 +115,9 @@ ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 %defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
 
+%if %{with javadoc}
 %files javadoc
 %defattr(644,root,root,755)
 %{_javadocdir}/%{name}-%{version}
 %ghost %{_javadocdir}/%{name}
+%endif
