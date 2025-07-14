@@ -60,7 +60,7 @@ Pliki demonstracyjne i przykłady dla pakietu %{srcname}.
 
 %prep
 %setup -qc
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 
